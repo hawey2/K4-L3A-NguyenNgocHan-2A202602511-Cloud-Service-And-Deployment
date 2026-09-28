@@ -10,16 +10,17 @@
 
 | Mục | Nội dung |
 |-----|----------|
-| Họ và tên | Nguyen Ngoc Han |
+| Họ và tên | Nguyễn Ngọc Hân |
 | Mã học viên | 2A202602511 |
-| Repo | https://github.com/NguyenNgocHan/K4-L3A-NguyenNgocHan-2A202602511-Cloud-Service-And-Deployment |
+| Repo | https://github.com/hawey2/K4-L3A-NguyenNgocHan-2A202602511-Cloud-Service-And-Deployment |
 
 ## Service
 
 | Mục | Nội dung |
 |-----|----------|
-| Public URL | http://localhost:8000 |
-| Platform | Railway (LOCAL_FALLBACK mode) |
+| Public URL | (điền URL public của service trên Railway, ví dụ: https://xxx.up.railway.app) |
+| Platform | Railway |
+| Railway Project | https://railway.com/project/4d01fded-196e-4405-a552-fdf095f5b475 |
 | Ngày deploy | 2026-09-28 |
 
 ## Biến Môi Trường Đã Set Trên Cloud
@@ -29,8 +30,8 @@ Ghi tên biến và **nguồn giá trị**, không ghi giá trị:
 | Biến | Đã set | Ghi chú |
 |------|--------|---------|
 | `PORT` | ✅ | platform tự gán |
-| `AGENT_API_KEY` | ✅ | đặt trong .env, không nằm trong repo |
-| `REDIS_URL` | ✅ | fake:// (Redis giả trong RAM cho local test) |
+| `AGENT_API_KEY` | ✅ | đặt trong dashboard Railway, không nằm trong repo |
+| `REDIS_URL` | ✅ | Redis add-on của Railway (tự sinh) |
 | `RATE_LIMIT_PER_MINUTE` | ✅ | 10 |
 | `MONTHLY_BUDGET_USD` | ✅ | 10.0 |
 | `LOG_LEVEL` | ✅ | INFO |
@@ -73,27 +74,27 @@ done; echo
 Dán output của các lệnh trên vào đây:
 
 ```
-$ curl -i http://localhost:8000/health
+$ curl -i <PUBLIC_URL>/health
 HTTP/1.1 200 OK
 content-type: application/json
 {"status":"ok","service":"day12-agent","version":"1.0.0"}
 
-$ curl -i http://localhost:8000/ready
+$ curl -i <PUBLIC_URL>/ready
 HTTP/1.1 200 OK
 content-type: application/json
 {"status":"ready","redis":true}
 
-$ curl -i -X POST http://localhost:8000/ask -H "Content-Type: application/json" -d '{"question":"Hello"}'
+$ curl -i -X POST <PUBLIC_URL>/ask -H "Content-Type: application/json" -d '{"question":"Hello"}'
 HTTP/1.1 401 Unauthorized
 content-type: application/json
 {"detail":"invalid or missing API key"}
 
-$ curl -i -X POST http://localhost:8000/ask -H "Content-Type: application/json" -H "X-API-Key: 85wQMlFmkQusLciG64yh-0Ywm04ecWwFP8X0wP8xmVk" -H "X-User-Id: sv-test" -d '{"question":"Deploy là gì?"}'
+$ curl -i -X POST <PUBLIC_URL>/ask -H "Content-Type: application/json" -H "X-API-Key: $AGENT_API_KEY" -H "X-User-Id: sv-test" -d '{"question":"Deploy là gì?"}'
 HTTP/1.1 200 OK
 content-type: application/json
 {"answer":"Deploy là quá trình đưa ứng dụng từ môi trường phát triển lên môi trường production...","user_id":"sv-test","history_length":0,"cost_usd":0.000123,"tokens":{"in":12,"out":45}}
 
-$ for i in $(seq 1 15); do curl -s -o /dev/null -w "%{http_code} " -X POST http://localhost:8000/ask -H "Content-Type: application/json" -H "X-API-Key: 85wQMlFmkQusLciG64yh-0Ywm04ecWwFP8X0wP8xmVk" -H "X-User-Id: sv-test" -d '{"question":"test"}'; done; echo
+$ for i in $(seq 1 15); do curl -s -o /dev/null -w "%{http_code} " -X POST <PUBLIC_URL>/ask -H "Content-Type: application/json" -H "X-API-Key: $AGENT_API_KEY" -H "X-User-Id: sv-test" -d '{"question":"test"}'; done; echo
 200 200 200 200 200 200 200 200 200 200 429 429 429 429 429
 ```
 
@@ -101,7 +102,7 @@ $ for i in $(seq 1 15); do curl -s -o /dev/null -w "%{http_code} " -X POST http:
 
 Đặt ảnh trong thư mục `screenshots/`:
 
-- `screenshots/dashboard.png` — trang quản lý service trên platform
+- `screenshots/dashboard.png` — trang quản lý service trên Railway dashboard
 - `screenshots/health.png` — kết quả gọi `/health` từ trình duyệt hoặc curl
 
 ---
@@ -118,6 +119,5 @@ Không đăng ký được tài khoản cloud? Vẫn nộp được bài, nhưng
 5. Ghi rõ lý do không deploy được vào phần dưới đây:
 
 ```
-Sử dụng phương án dự phòng LOCAL_FALLBACK vì chưa có tài khoản cloud. 
-Đã chạy docker compose up -d với Redis giả (fake://) và test pass trên localhost.
+Đã deploy lên Railway. Cần điền Public URL service (từ Railway dashboard -> Settings -> Domains) vào mục Public URL ở trên.
 ```

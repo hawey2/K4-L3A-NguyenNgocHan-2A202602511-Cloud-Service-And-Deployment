@@ -6,7 +6,7 @@
 > Cách trả lời: thay dòng `> *Câu trả lời của bạn *` bằng câu trả lời.
 > `grade.py` đếm số câu đã trả lời (15 điểm cho 10 câu).
 >
-> Họ và tên: Nguyen Ngoc Han  Mã học viên: 2A202602511
+> Họ và tên: Nguyễn Ngọc Hân  Mã học viên: 2A202602511
 
 ---
 
