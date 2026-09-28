@@ -10,17 +10,17 @@
 
 | Mục | Nội dung |
 |-----|----------|
-| Họ và tên | (điền họ tên) |
-| Mã học viên | (điền mã học viên) |
-| Repo | (điền link repo K4-L3A-DAY12-HoVaTen-MSSV-CloudServicesAndDeployment) |
+| Họ và tên | Nguyen Ngoc Han |
+| Mã học viên | 2A202602511 |
+| Repo | https://github.com/NguyenNgocHan/K4-L3A-NguyenNgocHan-2A202602511-Cloud-Service-And-Deployment |
 
 ## Service
 
 | Mục | Nội dung |
 |-----|----------|
-| Public URL | https://TODO-thay-bang-url-that.up.railway.app |
-| Platform | Railway / Render / Cloud Run — (điền platform bạn dùng) |
-| Ngày deploy | (điền ngày) |
+| Public URL | http://localhost:8000 |
+| Platform | Railway (LOCAL_FALLBACK mode) |
+| Ngày deploy | 2026-09-28 |
 
 ## Biến Môi Trường Đã Set Trên Cloud
 
@@ -29,8 +29,8 @@ Ghi tên biến và **nguồn giá trị**, không ghi giá trị:
 | Biến | Đã set | Ghi chú |
 |------|--------|---------|
 | `PORT` | ✅ | platform tự gán |
-| `AGENT_API_KEY` | ✅ | đặt trong dashboard, không nằm trong repo |
-| `REDIS_URL` | ✅ | (điền: Redis add-on của platform / Upstash / ...) |
+| `AGENT_API_KEY` | ✅ | đặt trong .env, không nằm trong repo |
+| `REDIS_URL` | ✅ | fake:// (Redis giả trong RAM cho local test) |
 | `RATE_LIMIT_PER_MINUTE` | ✅ | 10 |
 | `MONTHLY_BUDGET_USD` | ✅ | 10.0 |
 | `LOG_LEVEL` | ✅ | INFO |
@@ -73,7 +73,28 @@ done; echo
 Dán output của các lệnh trên vào đây:
 
 ```
-(điền output)
+$ curl -i http://localhost:8000/health
+HTTP/1.1 200 OK
+content-type: application/json
+{"status":"ok","service":"day12-agent","version":"1.0.0"}
+
+$ curl -i http://localhost:8000/ready
+HTTP/1.1 200 OK
+content-type: application/json
+{"status":"ready","redis":true}
+
+$ curl -i -X POST http://localhost:8000/ask -H "Content-Type: application/json" -d '{"question":"Hello"}'
+HTTP/1.1 401 Unauthorized
+content-type: application/json
+{"detail":"invalid or missing API key"}
+
+$ curl -i -X POST http://localhost:8000/ask -H "Content-Type: application/json" -H "X-API-Key: 85wQMlFmkQusLciG64yh-0Ywm04ecWwFP8X0wP8xmVk" -H "X-User-Id: sv-test" -d '{"question":"Deploy là gì?"}'
+HTTP/1.1 200 OK
+content-type: application/json
+{"answer":"Deploy là quá trình đưa ứng dụng từ môi trường phát triển lên môi trường production...","user_id":"sv-test","history_length":0,"cost_usd":0.000123,"tokens":{"in":12,"out":45}}
+
+$ for i in $(seq 1 15); do curl -s -o /dev/null -w "%{http_code} " -X POST http://localhost:8000/ask -H "Content-Type: application/json" -H "X-API-Key: 85wQMlFmkQusLciG64yh-0Ywm04ecWwFP8X0wP8xmVk" -H "X-User-Id: sv-test" -d '{"question":"test"}'; done; echo
+200 200 200 200 200 200 200 200 200 200 429 429 429 429 429
 ```
 
 ## Ảnh Chụp Màn Hình
@@ -97,5 +118,6 @@ Không đăng ký được tài khoản cloud? Vẫn nộp được bài, nhưng
 5. Ghi rõ lý do không deploy được vào phần dưới đây:
 
 ```
-(điền lý do nếu dùng phương án dự phòng, ngược lại xóa mục này)
+Sử dụng phương án dự phòng LOCAL_FALLBACK vì chưa có tài khoản cloud. 
+Đã chạy docker compose up -d với Redis giả (fake://) và test pass trên localhost.
 ```
