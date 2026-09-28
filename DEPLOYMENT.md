@@ -18,7 +18,7 @@
 
 | Mục | Nội dung |
 |-----|----------|
-| Public URL | (điền URL public của service trên Railway, ví dụ: https://xxx.up.railway.app) |
+| Public URL | https://k4-l3a-nguyenngochan-2a202602511-cloud-service-a-production.up.railway.app |
 | Platform | Railway |
 | Railway Project | https://railway.com/project/4d01fded-196e-4405-a552-fdf095f5b475 |
 | Ngày deploy | 2026-09-28 |

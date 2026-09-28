@@ -145,3 +145,5 @@ tìm ra nguyên nhân bằng cách nào, và sửa ra sao?
 > Cách tìm ra: Xem log Railway dashboard → thấy `uvicorn running on http://0.0.0.0:8000` nhưng health check URL là `https://app.up.railway.app` (port 443, map đến `$PORT` nội bộ). So sánh với local Docker Compose dùng `PORT=8000` vẫn chạy được.
 >
 > Sửa: Đổi `CMD` trong Dockerfile thành `CMD ["sh", "-c", "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}"]` để đọc `$PORT` từ môi trường, fallback 8000 cho local. Build lại, deploy → health check pass.
+>
+> **Lưu ý thêm**: Sau khi sửa port, service deploy thành công và healthy, nhưng Railway free tier có **edge rate limiting** (`railway-hikari` trả 429 "rate limited") chặn request từ client trước khi đến app. Đây là giới hạn của free tier, không phải lỗi code. Để test CP5 đầy đủ, dùng `LOCAL_FALLBACK=true` chạy docker compose local.
